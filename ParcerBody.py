@@ -1,7 +1,12 @@
 from bs4 import BeautifulStoneSoup
 import requests
 
-
+class Some_Exeption(Exception):
+    pass
+class Connection_Exception(Some_Exeption):
+    pass
+class Format_Exeption(Some_Exeption):
+       pass
 class SuperParser():
     """Класс содержащий базовые инструменты"""
     def __init__(self, headers, urls):
@@ -21,13 +26,7 @@ class SuperParser():
 
 
 def main():
-    headers = {'accept': '*/*',
-               'user-agent': 'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36'}
-
-    base_urls_navigator = ["https://www.navigator-63.ru/sitemap-shop-1.xml",
-                           "https://www.navigator-63.ru/sitemap-shop-2.xml"]
-
-    a = SuperParser(headers, base_urls_navigator)
+    print('Good')
 
 
 if __name__ == "__main__":
