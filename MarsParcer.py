@@ -1,7 +1,6 @@
 from bs4 import BeautifulStoneSoup
-import requests
 from ParcerBody import SuperParser
-from ParcerBody import Format_Exeption, Some_Exeption, Connection_Exception
+from ParcerBody import Format_Exeption, Connection_Exception
 
 
 class Mars(SuperParser):
@@ -45,13 +44,22 @@ class Mars(SuperParser):
                 return final
             else:
                 print("Не тот формат, вот ссылка {0}".format(url))
+                raise Format_Exeption
         else:
-            print("ERROR", url, sep='    ')
             raise Connection_Exception
 
 
+
+
 def main():
-    pass
+    headers = {'accept': '*/*',
+               'user-agent': 'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36'}
+
+    base_urls_mars = ["https://marstlt.ru/sitemap_iblock_8.part1.map", "https://marstlt.ru/sitemap_iblock_8.map"]
+
+    Mars_ = Mars(headers, base_urls_mars)
+    Mars_.parse_and_save(r'C:\work\Mars.xlsx')
+
 
 if __name__ == "__main__":
     main()
