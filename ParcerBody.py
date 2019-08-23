@@ -1,6 +1,7 @@
 from bs4 import BeautifulStoneSoup
 import requests
 import openpyxl
+from multiprocessing import Pool
 
 
 class Some_Exeption(Exception):
@@ -33,23 +34,15 @@ class SuperParser():
             list_of_urls += [url.next_element for url in urls]
         return list_of_urls
 
-    def parse_and_load(self, n, url, patch):
+    def parse_and_load(self, url):
+
         try:
             final = self.parse_data(url)
         except Some_Exeption:
             print("Ощибка в соединении или имени")
             return
         print(final, end='\n\n')
-
-        vk = openpyxl.load_workbook(patch)
-        sh = vk.active
-        sh.cell(column=1, row=n).value = str(final['name_of_product'])
-        sh.cell(column=2, row=n).value = str(final['reference'])
-        sh.cell(column=3, row=n).value = str(final['price_for_all'])
-        sh.cell(column=4, row=n).value = str(final['price_for_registered'])
-        sh.cell(column=5, row=n).value = str(final['url'])
-
-        vk.save(patch)
+        return final
 
     def parse_and_save(self, patch):
         patch = patch.replace('\ ', ' \\ ')
@@ -63,10 +56,31 @@ class SuperParser():
         sh.cell(column=4, row=1).value = "Цена розничного магазина"
         sh.cell(column=5, row=1).value = "Ссылка на товар"
         vk.save(patch)
-        list_of_urls = self.get_all_urls()
 
+        list_of_urls = self.get_all_urls()
+        len_list_of_urls = len(list_of_urls)
+        vk = openpyxl.load_workbook(patch)
+        sh = vk.active
+        sh.cell(column=6, row=1).value = len_list_of_urls
         for idx, item in enumerate(list_of_urls):
-            self.parse_and_load(idx + 2, item, patch)
+            idx += 2
+            result = self.parse_and_load(item)
+            try:
+                sh.cell(column=1, row=idx).value = str(result['name_of_product'])
+                sh.cell(column=2, row=idx).value = str(result['reference'])
+                sh.cell(column=3, row=idx).value = str(result['price_for_all'])
+                sh.cell(column=4, row=idx).value = str(result['price_for_registered'])
+                sh.cell(column=5, row=idx).value = str(result['url'])
+            except TypeError:
+                pass
+
+        if idx % 1000 == 0:
+            sh.cell(column=6, row=idx).value = idx / len_list_of_urls * 100
+            vk.save(patch)
+            vk = openpyxl.load_workbook(patch)
+            sh = vk.active
+
+    vk.save(patch)
 
 
 def main():
