@@ -79,8 +79,7 @@ class SuperParser():
             vk.save(patch)
             vk = openpyxl.load_workbook(patch)
             sh = vk.active
-
-    vk.save(patch)
+            vk.save(patch)
 
 
 def main():
