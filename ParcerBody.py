@@ -74,12 +74,12 @@ class SuperParser():
             except TypeError:
                 pass
 
-        if idx % 1000 == 0:
-            sh.cell(column=6, row=idx).value = idx / len_list_of_urls * 100
-            vk.save(patch)
-            vk = openpyxl.load_workbook(patch)
-            sh = vk.active
-            vk.save(patch)
+            if idx % 1000 == 0:
+                sh.cell(column=6, row=idx).value = idx / len_list_of_urls * 100
+                vk.save(patch)
+                vk = openpyxl.load_workbook(patch)
+                sh = vk.active
+        vk.save(patch)
 
 
 def main():
